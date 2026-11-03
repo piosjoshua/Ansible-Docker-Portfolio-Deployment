@@ -1,0 +1,148 @@
+
+---
+- name: Install Docker on Ubuntu and CentOS
+  hosts: image_targets
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Verify supported operating system
+      ansible.builtin.assert:
+        that:
+          - ansible_distribution in ["Ubuntu", "CentOS"]
+          - ansible_architecture == "x86_64"
+
+    - name: Check existing Docker Engine
+      ansible.builtin.command: docker info
+      register: docker_check
+      changed_when: false
+      failed_when: false
+
+    - name: Check existing Docker Buildx
+      ansible.builtin.command: docker buildx version
+      register: buildx_check
+      changed_when: false
+      failed_when: false
+
+    - name: Install Docker on Ubuntu if missing
+      when:
+        - ansible_distribution == "Ubuntu"
+        - docker_check.rc != 0
+      block:
+        - name: Install Ubuntu prerequisites
+          ansible.builtin.apt:
+            name:
+              - ca-certificates
+              - curl
+              - python3-debian
+            state: present
+            update_cache: true
+
+        - name: Create Docker keyring directory
+          ansible.builtin.file:
+            path: /etc/apt/keyrings
+            state: directory
+            mode: "0755"
+
+        - name: Download Docker GPG key
+          ansible.builtin.get_url:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            dest: /etc/apt/keyrings/docker.asc
+            mode: "0644"
+
+        - name: Add Docker repository
+          ansible.builtin.deb822_repository:
+            name: docker
+            types: [deb]
+            uris: https://download.docker.com/linux/ubuntu
+            suites:
+              - "{{ ansible_distribution_release }}"
+            components: [stable]
+            architectures: [amd64]
+            signed_by: /etc/apt/keyrings/docker.asc
+            state: present
+
+        - name: Install Docker Engine and Buildx
+          ansible.builtin.apt:
+            name:
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+              - docker-buildx-plugin
+              - docker-compose-plugin
+            state: present
+            update_cache: true
+
+    - name: Install Docker on CentOS if missing
+      when:
+        - ansible_distribution == "CentOS"
+        - docker_check.rc != 0
+      block:
+        - name: Install CentOS prerequisites
+          ansible.builtin.dnf:
+            name:
+              - ca-certificates
+              - curl
+              - dnf-plugins-core
+            state: present
+
+        - name: Configure Docker repository
+          ansible.builtin.get_url:
+            url: https://download.docker.com/linux/centos/docker-ce.repo
+            dest: /etc/yum.repos.d/docker-ce.repo
+            mode: "0644"
+
+        - name: Install Docker Engine and Buildx
+          ansible.builtin.dnf:
+            name:
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+              - docker-buildx-plugin
+              - docker-compose-plugin
+            state: present
+
+    - name: Enable and start Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Check Docker Buildx after installation
+      ansible.builtin.command: docker buildx version
+      register: final_buildx
+      changed_when: false
+      failed_when: false
+
+    - name: Ensure Buildx plugin on existing Ubuntu Docker CE
+      ansible.builtin.apt:
+        name: docker-buildx-plugin
+        state: present
+      when:
+        - ansible_distribution == "Ubuntu"
+        - docker_check.rc == 0
+        - final_buildx.rc != 0
+
+    - name: Ensure Buildx plugin on existing CentOS Docker
+      ansible.builtin.dnf:
+        name: docker-buildx-plugin
+        state: present
+      when:
+        - ansible_distribution == "CentOS"
+        - docker_check.rc == 0
+        - final_buildx.rc != 0
+
+    - name: Verify Docker Engine
+      ansible.builtin.command: docker info
+      changed_when: false
+
+    - name: Verify Docker Buildx
+      ansible.builtin.command: docker buildx version
+      changed_when: false
+
+    - name: Display installation result
+      ansible.builtin.debug:
+        msg: "Docker and Buildx verified on {{ inventory_hostname }}"
+
+
+

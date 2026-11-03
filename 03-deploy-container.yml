@@ -1,0 +1,70 @@
+
+---
+- name: Deploy Academic Portfolio Containers
+  hosts: all_targets
+  become: true
+  gather_facts: true
+
+  vars:
+    container_name: academic-portfolio-container
+    image_name: academic-portfolio:latest
+    host_port: "8080"
+    container_port: "80"
+
+  tasks:
+    - name: Verify image is available
+      community.docker.docker_image_info:
+        name: "{{ image_name }}"
+      register: image_info
+
+    - name: Confirm Docker image exists
+      ansible.builtin.assert:
+        that:
+          - image_info.images | length > 0
+        fail_msg: "Run 02-build-image.yml first."
+
+    - name: Start Academic Portfolio container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ image_name }}"
+        state: started
+        restart_policy: unless-stopped
+        recreate: true
+        pull: never
+        published_ports:
+          - "{{ host_port }}:{{ container_port }}"
+
+    - name: Check running Docker containers
+      ansible.builtin.command: docker ps
+      register: containers
+      changed_when: false
+
+    - name: Display running containers
+      ansible.builtin.debug:
+        var: containers.stdout_lines
+
+    - name: Verify portfolio website response
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ host_port }}/"
+        status_code: 200
+      register: website
+      retries: 8
+      delay: 3
+      until: website.status == 200
+
+    - name: Verify updated stylesheet
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ host_port }}/style_updated.css"
+        status_code: 200
+      register: css_response
+
+    - name: Display deployment result
+      ansible.builtin.debug:
+        msg: >-
+          Portfolio deployed on {{ inventory_hostname }}
+          ({{ ansible_distribution }}).
+          HTML status: {{ website.status }}.
+          CSS status: {{ css_response.status }}.
+
+
+

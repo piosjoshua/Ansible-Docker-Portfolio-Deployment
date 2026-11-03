@@ -1,0 +1,88 @@
+
+---
+- name: Build Academic Portfolio Docker Image
+  hosts: image_targets
+  become: true
+  gather_facts: true
+
+  vars:
+    app_directory: /opt/academic-portfolio
+    image_name: academic-portfolio
+    image_tag: latest
+
+  tasks:
+    - name: Check Docker Engine
+      ansible.builtin.command: docker info
+      changed_when: false
+
+    - name: Check Docker Buildx
+      ansible.builtin.command: docker buildx version
+      changed_when: false
+
+    - name: Remove previous website source
+      ansible.builtin.file:
+        path: "{{ app_directory }}/site"
+        state: absent
+
+    - name: Create application directory
+      ansible.builtin.file:
+        path: "{{ app_directory }}/site"
+        state: directory
+        mode: "0755"
+
+    - name: Copy Dockerfile to target machine
+      ansible.builtin.copy:
+        src: Dockerfile
+        dest: "{{ app_directory }}/Dockerfile"
+        mode: "0644"
+
+    - name: Transfer updated portfolio website files
+      ansible.builtin.copy:
+        src: site/
+        dest: "{{ app_directory }}/site/"
+        mode: preserve
+
+    - name: Verify updated HTML file
+      ansible.builtin.stat:
+        path: "{{ app_directory }}/site/index.html"
+      register: html_file
+
+    - name: Verify updated CSS file
+      ansible.builtin.stat:
+        path: "{{ app_directory }}/site/style_updated.css"
+      register: css_file
+
+    - name: Validate website files
+      ansible.builtin.assert:
+        that:
+          - html_file.stat.isreg | default(false)
+          - css_file.stat.isreg | default(false)
+        fail_msg: "Updated HTML or CSS file is missing."
+
+    - name: Build Docker image using Buildx
+      community.docker.docker_image_build:
+        name: "{{ image_name }}"
+        tag: "{{ image_tag }}"
+        path: "{{ app_directory }}"
+        dockerfile: Dockerfile
+        rebuild: always
+        pull: true
+
+    - name: Verify Docker image
+      ansible.builtin.command:
+        argv:
+          - docker
+          - image
+          - inspect
+          - "{{ image_name }}:{{ image_tag }}"
+      changed_when: false
+
+    - name: Display successful image build
+      ansible.builtin.debug:
+        msg: >-
+          Successfully built {{ image_name }}:{{ image_tag }}
+          on {{ inventory_hostname }}
+          ({{ ansible_distribution }}).
+
+
+

@@ -1,0 +1,58 @@
+
+---
+- name: Verify Academic Portfolio Deployment
+  hosts: all_targets
+  become: true
+  gather_facts: true
+
+  vars:
+    container_name: academic-portfolio-container
+    website_url: http://127.0.0.1:8080/
+
+  tasks:
+    - name: Inspect Academic Portfolio container
+      community.docker.docker_container_info:
+        name: "{{ container_name }}"
+      register: container
+
+    - name: Verify container exists and is running
+      ansible.builtin.assert:
+        that:
+          - container.exists
+          - container.container.State.Running
+        success_msg: "Academic Portfolio container is running."
+        fail_msg: "Academic Portfolio container is not running."
+
+    - name: Check portfolio website
+      ansible.builtin.uri:
+        url: "{{ website_url }}"
+        status_code: 200
+        return_content: true
+      register: webpage
+
+    - name: Check updated stylesheet
+      ansible.builtin.uri:
+        url: "{{ website_url }}style_updated.css"
+        status_code: 200
+        return_content: true
+      register: stylesheet
+
+    - name: Verify updated website content
+      ansible.builtin.assert:
+        that:
+          - "'Team 4 Student Portfolio' in webpage.content"
+          - "'style_updated.css' in webpage.content"
+          - "stylesheet.content | length > 0"
+        success_msg: "Updated Team 4 website and CSS verified."
+        fail_msg: "Updated website content was not verified."
+
+    - name: Display verification result
+      ansible.builtin.debug:
+        msg: >-
+          Deployment successfully verified on
+          {{ inventory_hostname }} ({{ ansible_distribution }}).
+          HTML: {{ webpage.status }}.
+          CSS: {{ stylesheet.status }}.
+
+
+
