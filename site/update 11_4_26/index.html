@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team 4 Student Portfolio</title>
+    <link rel="stylesheet" href="style_updated.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">TEAM 4 Portfolio</div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#projects">Student Portfolios</a></li>
+            <li><a href="#videos">Videos</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Team 4 Student Portfolio</h1>
+            <p>Explore the profiles, activities, and academic work of our four team members.</p>
+            <a href="#projects" class="btn">View Student Portfolios</a>
+            <a href="#videos" class="btn secondary">View Demonstrations</a>
+        </div>
+    </section>
+
+    <!-- Student Portfolios -->
+    <section id="projects">
+        <div class="section-title">
+            <h2>Student Portfolios</h2>
+            <p>Select a student to view their profile, HOAs, exams, and reflection and learnings.</p>
+        </div>
+
+        <div class="projects">
+            <div class="project-card">
+                <div class="project-icon">👩‍🎓</div>
+                <h3>Malabanan, Nadine</h3>
+                <p>Profile, term HOAs, exams, and reflection and learnings.</p>
+                <a href="#student1" class="open-portfolio" data-student="1">View Portfolio →</a>
+            </div>
+            <div class="project-card">
+                <div class="project-icon">👨‍🎓</div>
+                <h3>Masongsong, John Marvin</h3>
+                <p>Profile, term HOAs, exams, and reflection and learnings.</p>
+                <a href="#student2" class="open-portfolio" data-student="2">View Portfolio →</a>
+            </div>
+            <div class="project-card">
+                <div class="project-icon">👨‍🎓</div>
+                <h3>Pios, Joshua Paul</h3>
+                <p>Profile, term HOAs, exams, and reflection and learnings.</p>
+                <a href="#student3" class="open-portfolio" data-student="3">View Portfolio →</a>
+            </div>
+            <div class="project-card">
+                <div class="project-icon">👨‍🎓</div>
+                <h3>Villareal, Vander ohe Vernon</h3>
+                <p>Profile, term HOAs, exams, and reflection and learnings.</p>
+                <a href="#student4" class="open-portfolio" data-student="4">View Portfolio →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Student Profile Modal -->
+    <div class="portfolio-modal" id="portfolioModal" aria-hidden="true">
+        <div class="portfolio-modal-content" role="dialog" aria-modal="true" aria-labelledby="modalStudentName">
+            <button class="modal-close" id="closePortfolio" aria-label="Close portfolio">&times;</button>
+            <div class="student-profile-header">
+                <img id="studentPicture" src="images/student1.jpg" alt="Student profile picture" onerror="this.style.display='none'; document.getElementById('pictureFallback').style.display='flex';">
+                <div class="picture-fallback" id="pictureFallback">👤</div>
+                <div>
+                    <h2 id="modalStudentName">Student 1</h2>
+                    <p>Student Portfolio</p>
+                </div>
+            </div>
+            <p class="profile-note">Class of CPE212, Section 31S2</p>
+
+            <h3 class="portfolio-subheading">HOAs</h3>
+            <div class="portfolio-work-grid">
+                <div class="portfolio-work-card">
+                    <h4>Prelim HOA</h4>
+                    <p>Preliminary hands-on activities</p>
+                    <div id="prelimFiles" class="pdf-list"></div>
+                </div>
+                <div class="portfolio-work-card">
+                    <h4>Midterm HOA</h4>
+                    <p>Midterm hands-on activities</p>
+                    <div id="midtermFiles" class="pdf-list"></div>
+                </div>
+                <div class="portfolio-work-card">
+                    <h4>Finals HOA</h4>
+                    <p>Final-term hands-on activities</p>
+                    <div id="finalsFiles" class="pdf-list"></div>
+                </div>
+            </div>
+
+            <h3 class="portfolio-subheading">Exams</h3>
+            <div class="portfolio-work-grid">
+                <div class="portfolio-work-card">
+                    <h4>Prelim Exam</h4>
+                    <p>Preliminary exam output and files</p>
+                    <div id="prelimExamFiles" class="pdf-list"></div>
+                </div>
+                <div class="portfolio-work-card">
+                    <h4>Midterm Exam</h4>
+                    <p>Midterm exam output and files</p>
+                    <div id="midtermExamFiles" class="pdf-list"></div>
+                </div>
+                <div class="portfolio-work-card">
+                    <h4>Final Exam</h4>
+                    <p>Final exam output and files</p>
+                    <div id="finalExamFiles" class="pdf-list"></div>
+                </div>
+            </div>
+
+            <div class="reflection-section">
+                <h3 class="portfolio-subheading">Reflection and Learnings</h3>
+                <p id="reflectionText">Add this student's reflection here, including the skills gained, challenges faced, and lessons learned throughout the activities and exams.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demonstrations and Presentations -->
+    <section id="videos">
+        <div class="section-title">
+            <h2>Demonstrations and Presentations</h2>
+            <p>Videos showcasing our activities and class projects</p>
+        </div>
+        <div class="video-container">
+            <video controls>
+                <source src="videos/project-demo.mp4" type="video/mp4">
+                Your browser does not support the video element.
+            </video>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 Team 4 Student Portfolio. All Rights Reserved.</p>
+    </footer>
+
+    <style>
+        .pdf-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .pdf-list a { display: block; overflow-wrap: anywhere; }
+        .pdf-empty { color: #777; font-size: 0.9rem; }
+    </style>
+
+    <script>
+        // PDF filenames and category folders below were matched to the supplied files folder.
+        // Keep the files folder beside this index.html when deploying the portfolio.
+        const studentData = {
+            1: {
+                name: "Malabanan, Nadine", folder: "malabanan", emoji: "👩‍🎓",
+                reflection: "Throughout this course, I learned how to work with virtual machines, Ansible, and containerization. These activities helped me improve my technical skills, solve problems, and become more confident in managing systems.",
+                documents: {
+                    prelimHoa: [
+                        "Malabanan_4.1 Hands-on Activity_ Ansible Basics.pdf"
+                    ],
+                    midtermHoa: [
+                        "Malabanan_6.1- Targeting Specific Nodes.pdf",
+                        "Malabanan_Hands-on Activity 7.1_ Managing Files and Creating Roles in Ansible.pdf",
+                        "Malabanan_Seatwork 8.1_ Installing Nagios.pdf"
+                    ],
+                    finalsHoa: [
+                        "Malabanan_Hands-on Activity 10.1_ Install, Configure and Manage Enterprise Log Monitoring via Ansible.pdf",
+                        "Malabanan_Hands-on Activity 11.1_ Containerization.pdf"
+                    ],
+                    prelimExam: [],
+                    midtermExam: [],
+                    finalExam: [
+                        "Malabanan_Final Hands-on Skills Exam.pdf"
+                    ],
+                }
+            },
+            2: {
+                name: "Masongsong, John Marvin", folder: "masongsong", emoji: "👨‍🎓",
+                reflection: "This course helped me gain practical experience with Linux, Ansible automation, monitoring tools, and Docker. I learned to troubleshoot errors and understand how these tools are used in system administration.",
+                documents: {
+                    prelimHoa: [
+                        "Masongsong_3.1 Hands-on Activity - Install SSH server on CentOS or RHEL 8.pdf",
+                        "Masongsong_4.1 Hands-on Activity_ Ansible Basics.pdf",
+                        "Masongsong_Hands-on Activity 5.1_ Implement Ansible roles in playbooks.pdf",
+                        "Masongsong_Hands-on-Activity 1.1_CPE212.pdf",
+                        "Masongsong_Hands-on-Activity2.1_CPE212.pdf"
+                    ],
+                    midtermHoa: [
+                        "Masongsong_Activity 10_ Install, Configure, and Manage Log Monitoring tools.pdf",
+                        "Masongsong_Activity 6 - Targeting Specific Nodes.pdf",
+                        "Masongsong_Hands-on Activity 7.1_ Managing Files and Creating Roles in Ansible.pdf",
+                        "Masongsong_Hands-on Activity 8.1_ Install, Configure, and Manage Enterprise Availability Monitoring via Ansible.pdf"
+                    ],
+                    finalsHoa: [
+                        "Masongsong_Hands-on Activity 11.1_ Containerization.pdf",
+                        "Masongsong_Hands-on Activity 12.1 Build a Sample Web App in a Docker Container.pdf"
+                    ],
+                    prelimExam: [
+                        "Masongsong_PrelimExam_SysAd.pdf"
+                    ],
+                    midtermExam: [
+                        "Masongsong_Midterm Skills Exam SysAd.pdf"
+                    ],
+                    finalExam: [
+                        "Masongsong_Final Hands-on Skills Exam.pdf"
+                    ],
+                }
+            },
+            3: {
+                name: "Pios, Joshua Paul", folder: "pios", emoji: "👨‍🎓",
+                reflection: "The hands-on activities helped me understand system administration through practice. I gained experience with virtual machines, SSH, Ansible, and Docker, while learning the importance of patience and troubleshooting.",
+                documents: {
+                    prelimHoa: [
+                        "1.1 Hands-on Activity - Creating Virtual Machines_Pios, Joshua.pdf",
+                        "2.1 Hands-on Activity - SSH Key-Based Authentication and GIT Setup.pdf",
+                        "3.1 Hands-on Activity - Install SSH server on CentOS or RHEL 8_Pios, Joshua.pdf",
+                        "4.1 Hands-on Activity_ Ansible Basics_Pios, Joshua.pdf",
+                        "Hands-on Activity 5.1_ Implement Ansible roles in playbooks_Pios, Joshua.pdf"
+                    ],
+                    midtermHoa: [
+                        "Hands-on Activity 10.1_ Install, Configure and Manage Enterprise Log Monitoring via Ansible_Pios, Joshua.pdf",
+                        "Hands-On Activity 6.1_ Targeting Specific Nodes_Pios, Joshua.pdf",
+                        "Hands-on Activity 7.1_ Managing Files and Creating Roles in Ansible_Pios, Joshua.pdf",
+                        "Hands-on Activity 8.1_ Install, Configure, and Manage Enterprise Availability Monitoring via Ansible_Pios, Joshua.pdf"
+                    ],
+                    finalsHoa: [
+                        "Hands-on Activity 11.1_ Containerization_Pios, Joshua.pdf",
+                        "Hands-on Activity 12.1 Build a Sample Web App in a Docker Container_Pios, Joshua.pdf"
+                    ],
+                    prelimExam: [
+                        "Prelim Exam Skills_Pios, Joshua.pdf"
+                    ],
+                    midtermExam: [
+                        "Midterm Skills Exam_Pios, Joshua.pdf"
+                    ],
+                    finalExam: [
+                        "Final Hands-on Skills Exam_Pios, Joshua.pdf"
+                    ],
+                }
+            },
+            4: {
+                name: "Villareal, Vander ohe Vernon", folder: "villareal", emoji: "👨‍🎓",
+                reflection: "I learned useful skills in configuring and managing systems using Linux and Ansible. The activities introduced me to monitoring and containerization and helped me become better at solving technical problems.",
+                documents: {
+                    prelimHoa: [
+                        "Villareal_1.1 Hands-on Activity - Creating Virtual Machines.pdf",
+                        "Villareal_2.1 Hands-on Activity - SSH Key-Based Authentication and GIT Setup.pdf",
+                        "Villareal_3.1 Hands-on Activity - Install SSH server on CentOS or RHEL 8.pdf",
+                        "Villareal_4.1 Hands-on Activity_ Ansible Basics.pdf",
+                        "Villareal_Hands-on Activity 5.1_ Implement Ansible roles in playbooks.pdf"
+                    ],
+                    midtermHoa: [
+                        "Villareal_Hands-on Activity 10.1_ Install, Configure and Manage Enterprise Log Monitoring via Ansible.pdf",
+                        "Villareal_Hands-On Activity 6.1_ Targeting Specific Nodes.pdf",
+                        "Villareal_Hands-on Activity 7.1_ Managing Files and Creating Roles in Ansible.pdf",
+                        "Villareal_Hands-on Activity 8.1_ Install, Configure, and Manage Enterprise Availability Monitoring via Ansible.pdf"
+                    ],
+                    finalsHoa: [
+                        "Villareal_Hands-on Activity 11.1_ Containerization.pdf",
+                        "Villareal_Hands-on Activity 12.1 Build a Sample Web App in a Docker Container.pdf"
+                    ],
+                    prelimExam: [
+                        "Villareal_Prelim Exam Skills.pdf"
+                    ],
+                    midtermExam: [
+                        "Villareal_Midterm Skills Exam.pdf"
+                    ],
+                    finalExam: [
+                        "Villareal_Final Hands-on Skills Exam.pdf"
+                    ],
+                }
+            }
+        };
+
+        const categoryFolders = {
+            prelimHoa: 'prelim-hoa',
+            midtermHoa: 'midterm-hoa',
+            finalsHoa: 'final-hoa',
+            prelimExam: 'prelim-exam',
+            midtermExam: 'midterm-exam',
+            finalExam: 'final-exam'
+        };
+
+        const listElements = {
+            prelimHoa: document.getElementById('prelimFiles'),
+            midtermHoa: document.getElementById('midtermFiles'),
+            finalsHoa: document.getElementById('finalsFiles'),
+            prelimExam: document.getElementById('prelimExamFiles'),
+            midtermExam: document.getElementById('midtermExamFiles'),
+            finalExam: document.getElementById('finalExamFiles')
+        };
+
+        const modal = document.getElementById('portfolioModal');
+        const modalName = document.getElementById('modalStudentName');
+        const studentPicture = document.getElementById('studentPicture');
+        const pictureFallback = document.getElementById('pictureFallback');
+
+        function renderPdfList(container, student, category) {
+            container.replaceChildren();
+            const filenames = student.documents[category] || [];
+
+            if (filenames.length === 0) {
+                const message = document.createElement('span');
+                message.className = 'pdf-empty';
+                message.textContent = 'No PDFs added yet.';
+                container.appendChild(message);
+                return;
+            }
+
+            filenames.forEach(filename => {
+                const link = document.createElement('a');
+                link.href = `files/${student.folder}/${categoryFolders[category]}/${encodeURIComponent(filename)}`;
+                // Ask the browser to download this PDF instead of opening it.
+                link.setAttribute('download', filename);
+                link.textContent = `⬇ Download ${filename}`;
+                container.appendChild(link);
+            });
+        }
+
+        document.querySelectorAll('.open-portfolio').forEach(link => {
+            link.addEventListener('click', event => {
+                event.preventDefault();
+                const student = studentData[link.dataset.student];
+                if (!student) return;
+
+                modalName.textContent = student.name;
+                pictureFallback.textContent = student.emoji;
+                studentPicture.style.display = 'block';
+                pictureFallback.style.display = 'none';
+                studentPicture.src = `images/${student.folder}.jpg`;
+                studentPicture.alt = `${student.name} profile picture`;
+                studentPicture.onerror = () => {
+                    studentPicture.style.display = 'none';
+                    pictureFallback.style.display = 'flex';
+                };
+
+                Object.keys(listElements).forEach(category => {
+                    renderPdfList(listElements[category], student, category);
+                });
+
+                document.getElementById('reflectionText').textContent = student.reflection;
+                modal.classList.add('show');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('modal-open');
+                document.getElementById('closePortfolio').focus();
+            });
+        });
+
+        function closePortfolio() {
+            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+        }
+        document.getElementById('closePortfolio').addEventListener('click', closePortfolio);
+        modal.addEventListener('click', event => {
+            if (event.target === modal) closePortfolio();
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && modal.classList.contains('show')) closePortfolio();
+        });
+    </script>
+</body>
+</html>
